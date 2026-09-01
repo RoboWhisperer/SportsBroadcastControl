@@ -17,6 +17,29 @@ Monitoring page rather than closing the app. A degraded control surface you can
 still cut cameras with beats a dead one mid-game — but treat anything that
 appears there as a real bug to report, not as noise.
 
+## The taskbar shows a generic icon (Linux .deb)
+
+Desktop environments find an application's icon through the freedesktop
+**hicolor** theme, and that theme only indexes standard sizes — 16, 24, 32, 48,
+64, 128, 256, 512 and so on. A package that installs its icon at a
+non-standard size such as `1024x1024` installs cleanly and still shows the
+generic fallback, because the lookup never matches.
+
+The package ships all eight standard sizes. If the icon is still generic after
+an upgrade, the icon cache is stale:
+
+```bash
+sudo gtk-update-icon-cache -f /usr/share/icons/hicolor
+```
+
+On Debian and Ubuntu this normally happens by itself: the `hicolor-icon-theme`
+package registers a dpkg trigger on `/usr/share/icons/hicolor`.
+
+If the window has an icon but the taskbar entry does not, the window is not
+being matched to the `.desktop` file. Check that `StartupWMClass` in
+`/usr/share/applications/sports-broadcast-control.desktop` matches the
+executable name.
+
 ## OBS
 
 | Symptom | Cause | Fix |

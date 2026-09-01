@@ -13,6 +13,17 @@ and the interface agree.
 
 Geometry was tuned by rendering at 128/48/32/16 and picking the spacing where
 four cells stay distinct at 16px. Requires Pillow:  pip install pillow
+
+Two outputs:
+
+  build/icon.png   1024x1024, used for Windows and as the generic source
+  build/icons/     one PNG per standard hicolor size, used for the Linux .deb
+
+The directory matters. A .deb that ships only a 1024x1024 icon installs fine but
+shows a generic icon in the taskbar, because 1024x1024 is not a size the
+freedesktop hicolor theme indexes, so the lookup never finds it. Each size is
+rendered from the geometry rather than downscaled from one large PNG, which
+keeps the small ones crisp.
 """
 
 from PIL import Image, ImageDraw
@@ -45,8 +56,17 @@ def render(size: int = SIZE) -> Image.Image:
     return im.resize((size, size), Image.LANCZOS)
 
 
+# Sizes the freedesktop hicolor theme indexes. 1024 is deliberately absent.
+HICOLOR_SIZES = (16, 24, 32, 48, 64, 128, 256, 512)
+
+
 if __name__ == "__main__":
-    out = Path(__file__).resolve().parent.parent / "build" / "icon.png"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    render().save(out, "PNG")
-    print(f"wrote {out} ({SIZE}x{SIZE})")
+    build = Path(__file__).resolve().parent.parent / "build"
+    (build / "icons").mkdir(parents=True, exist_ok=True)
+
+    render().save(build / "icon.png", "PNG")
+    print(f"wrote build/icon.png ({SIZE}x{SIZE})")
+
+    for s in HICOLOR_SIZES:
+        render(s).save(build / "icons" / f"{s}x{s}.png", "PNG")
+    print("wrote build/icons/ " + ", ".join(f"{s}x{s}" for s in HICOLOR_SIZES))

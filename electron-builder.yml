@@ -42,6 +42,10 @@ linux:
   syncDesktopName: true
   # Required by the deb format.
   maintainer: RoboWhisperer <robo@robowhisperer.is-a.dev>
+  # A directory of per-size PNGs, not a single file. Shipping only a 1024x1024
+  # icon installs cleanly but shows a generic icon in the taskbar, because
+  # 1024x1024 is not a size the freedesktop hicolor theme indexes.
+  icon: build/icons
 
 deb:
   priority: optional
@@ -62,4 +66,4 @@ deb:
     - libsecret-1-0
     - xdg-utils
 
-# icon is picked up from build/icon.png (1024x1024) for every target.
+# Windows takes build/icon.png; Linux takes the per-size set in build/icons.
