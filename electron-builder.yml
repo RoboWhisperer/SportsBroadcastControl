@@ -37,3 +37,8 @@ nsis:
 linux:
   target: [AppImage]
   category: AudioVideo
+  synopsis: Control surface for live sports broadcasts
+  # Ties a running window to the .desktop entry so the taskbar shows our icon.
+  syncDesktopName: true
+
+# icon is picked up from build/icon.png (1024x1024) for every target.

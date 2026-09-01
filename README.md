@@ -1,3 +1,5 @@
+<img src="docs/img/logo.jpg" alt="" width="128" align="right">
+
 # Sports Broadcast Control
 
 A control surface for a high-school sports broadcast. One screen a student
