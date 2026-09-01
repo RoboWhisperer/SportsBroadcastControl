@@ -1,0 +1,39 @@
+appId: net.sportsbroadcast.control
+productName: Sports Broadcast Control
+copyright: Sports Broadcast Control contributors
+
+directories:
+  output: release
+  buildResources: build
+
+# Only the built output plus the runtime dependencies that stay outside the
+# bundle. There is no native module to rebuild: SQLite comes from node:sqlite.
+files:
+  - dist/**
+  - dist-electron/**
+  - package.json
+  - '!**/*.map'
+
+npmRebuild: false
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  artifactName: ${productName} ${version} ${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Sports Broadcast Control
+  # The database, logs and configuration live in %APPDATA%; created on first run.
+  deleteAppDataOnUninstall: false
+
+linux:
+  target: [AppImage]
+  category: AudioVideo

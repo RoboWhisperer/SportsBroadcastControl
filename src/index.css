@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+/* Be explicit about what to scan; automatic detection depends on .gitignore. */
+@source '../index.html';
+@source '../src';
+
+@theme {
+  --color-panel: #14161a;
+  --color-surface: #1c1f25;
+  --color-edge: #2c313a;
+  --color-live: #e01b24;
+  --color-preview: #2ec27e;
+  --color-warn: #f5a524;
+  --color-idle: #5c6370;
+
+  --font-mono: ui-monospace, Cascadia Mono, Consolas, monospace;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility tap {
+  /* 48px minimum touch target on every interactive control. */
+  @apply min-h-[48px] min-w-[48px];
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+
+@layer base {
+  :root { color-scheme: dark; }
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-[#0d0f12] text-zinc-100 antialiased select-none;
+    font-family: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+    overscroll-behavior: none;
+  }
+  /* Live production: no hover-only affordances, and a focus ring you can see from the back row. */
+  :focus-visible { @apply outline-hidden ring-2 ring-sky-400 ring-offset-2 ring-offset-[#0d0f12]; }
+  input, select, textarea { @apply select-text; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { @apply bg-edge rounded-sm; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

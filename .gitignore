@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-electron/
+release/
+*.log
+
+# Local design brief, not part of the published project
+Build_Instructions.md
