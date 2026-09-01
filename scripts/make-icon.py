@@ -6,7 +6,7 @@ The mark is a 2x2 multiview with one cell live: the clearest way to say
 "video switcher" in a shape that survives a 16px taskbar. It was chosen over a
 play triangle because the triangle turns to mush below 32px.
 
-Colours are sampled from the project artwork (SportsBroadcastControl.jpg):
+Colours are sampled from the project artwork (docs/img/logo.jpg):
 blue #126FF8 and navy #2E3059 are its two dominant hues. The live cell uses the
 same red as the app's own on-air indicator (--color-live, #E01B24), so the icon
 and the interface agree.
