@@ -22,9 +22,12 @@ win:
       arch: [x64]
     - target: portable
       arch: [x64]
+  # Each target needs its own name: nsis and portable both emit a .exe, and with
+  # one shared pattern the second build silently overwrites the first.
   artifactName: ${productName} ${version} ${arch}.${ext}
 
 nsis:
+  artifactName: ${productName} Setup ${version} ${arch}.${ext}
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
@@ -33,6 +36,9 @@ nsis:
   shortcutName: Sports Broadcast Control
   # The database, logs and configuration live in %APPDATA%; created on first run.
   deleteAppDataOnUninstall: false
+
+portable:
+  artifactName: ${productName} Portable ${version} ${arch}.${ext}
 
 linux:
   target: [AppImage, deb]

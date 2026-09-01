@@ -28,6 +28,37 @@ npm run dist            # every target for the current platform
 npx electron-builder --linux deb    # just the deb
 ```
 
+### Building the Windows installer from Linux
+
+`npx electron-builder --win` gets as far as packaging and then fails with
+`wine process failed ENOENT`. Wine is not needed to sign — it is needed to stamp
+the executable's icon and version resources. Rather than install wine system
+wide, use the image electron-builder publishes for exactly this:
+
+```bash
+docker run --rm -v "$PWD":/project \
+  -v "$HOME/.cache/electron":/root/.cache/electron \
+  -v "$HOME/.cache/electron-builder":/root/.cache/electron-builder \
+  -w /project electronuserland/builder:wine \
+  /bin/bash -lc "npx electron-builder --win"
+```
+
+Run `npm run build` on the host first; the container only packages what is in
+`dist/` and `dist-electron/`. Mounting the two caches keeps it from
+re-downloading Electron on every run.
+
+This produces two files, and they must have different names — `nsis` and
+`portable` both emit a `.exe`, so a single shared `artifactName` makes the
+second target silently overwrite the first:
+
+| File | What it is |
+| --- | --- |
+| `Sports Broadcast Control Setup <version> x64.exe` | Installer, creates shortcuts |
+| `Sports Broadcast Control Portable <version> x64.exe` | Single file, no installation |
+
+Both are **unsigned**, so SmartScreen will warn. See the administrator guide for
+what signing would involve.
+
 There is no native module to compile. SQLite comes from Node's built-in
 `node:sqlite`, so `npm install` never touches a C++ toolchain.
 
