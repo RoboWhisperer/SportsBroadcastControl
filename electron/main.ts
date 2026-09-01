@@ -263,6 +263,25 @@ const waylandSession =
   process.platform === 'linux' && (process.env.XDG_SESSION_TYPE === 'wayland' || !!process.env.WAYLAND_DISPLAY)
 if (waylandSession && !app.commandLine.hasSwitch('enable-gpu')) app.disableHardwareAcceleration()
 
+/**
+ * Tell the desktop which .desktop entry this window belongs to.
+ *
+ * X11 uses WM_CLASS, which the generated entry already declares through
+ * StartupWMClass. Wayland has no WM_CLASS: the compositor matches a window to
+ * its entry by `app_id`, and Chromium takes that from `--class`. Without it,
+ * KDE Plasma cannot find the entry and the taskbar shows a generic icon no
+ * matter how many icon sizes the package installs.
+ *
+ * The value must equal the .desktop file's basename. It is set explicitly
+ * rather than through app.setName(), because the name also determines the
+ * configuration directory and changing that would strand an existing install.
+ */
+const DESKTOP_ENTRY = 'sports-broadcast-control'
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('class', DESKTOP_ENTRY)
+  app.setDesktopName(`${DESKTOP_ENTRY}.desktop`)
+}
+
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {

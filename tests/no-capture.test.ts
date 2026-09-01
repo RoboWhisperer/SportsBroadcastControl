@@ -103,3 +103,38 @@ describe('startup switches', () => {
     expect(main.indexOf("appendSwitch(\n  'disable-features'")).toBeLessThan(main.indexOf('app.whenReady()'))
   })
 })
+
+/**
+ * Reported twice: the .deb installed but the KDE taskbar showed a generic icon.
+ * Shipping the standard icon sizes was necessary but not sufficient — on Wayland
+ * there is no WM_CLASS, and the compositor matches a window to its .desktop
+ * entry by app_id, which Chromium takes from --class.
+ */
+describe('desktop integration on Linux', () => {
+  const main = readFileSync(path.join(ROOT, 'electron/main.ts'), 'utf8')
+  const entry = 'sports-broadcast-control'
+
+  it('sets the Wayland app_id via --class', () => {
+    expect(main).toMatch(/appendSwitch\('class', DESKTOP_ENTRY\)/)
+  })
+
+  it('names the desktop entry for the session', () => {
+    expect(main).toMatch(/setDesktopName\(`\$\{DESKTOP_ENTRY\}\.desktop`\)/)
+  })
+
+  it('uses the same identifier the packaged .desktop file is named after', () => {
+    expect(main).toMatch(new RegExp(`const DESKTOP_ENTRY = '${entry}'`))
+    // electron-builder derives the .desktop basename from the package name.
+    const pkg = JSON.parse(readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
+    expect(pkg.name).toBe(entry)
+  })
+
+  it('does not change the app name, which would move the config directory', () => {
+    // Ignore comments: the reasoning above mentions setName by name.
+    const code = main
+      .split('\n')
+      .filter((l) => !/^\s*(\*|\/\/|\/\*)/.test(l))
+      .join('\n')
+    expect(code).not.toMatch(/app\.setName\(/)
+  })
+})
