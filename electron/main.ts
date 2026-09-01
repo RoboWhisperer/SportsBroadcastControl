@@ -3,7 +3,7 @@ import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Store, type Crypto } from './db.js'
+import { SchemaTooNewError, Store, type Crypto } from './db.js'
 import { Hub } from './hub.js'
 import { ControlApi } from './api.js'
 import type { AppState } from '../shared/types.js'
@@ -308,8 +308,23 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(async () => {
     const userData = app.getPath('userData')
     adoptPreviousConfig(userData)
-    const store = new Store(path.join(userData, 'sbc.db'), makeCrypto())
-    hub = new Hub(store)
+
+    let store: Store
+    try {
+      store = new Store(path.join(userData, 'sbc.db'), makeCrypto())
+    } catch (e) {
+      // Refusing to start is the right answer here: the alternative is writing
+      // this build's older format over a newer one and losing the difference.
+      const detail =
+        e instanceof SchemaTooNewError
+          ? e.message
+          : `The configuration database could not be opened.\n\n${(e as Error).message}\n\n${path.join(userData, 'sbc.db')}`
+      dialog.showErrorBox('Sports Broadcast Control cannot start', detail)
+      app.exit(1)
+      return
+    }
+    hub = new Hub(store, app.getVersion())
+    for (const m of store.applied) hub.log('info', 'db', `Database migrated — ${m}`)
     api = new ControlApi(hub)
     hub.on('state', pushState)
     hub.on('thumbs', pushThumbs)

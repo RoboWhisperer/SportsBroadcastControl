@@ -92,6 +92,7 @@ export class ControlApi {
 
     app.get('/api/status', (_req, res) => {
       res.json({
+        version: s().version,
         productionName: s().settings.productionName,
         demoMode: s().settings.demoMode,
         obs: s().obs,

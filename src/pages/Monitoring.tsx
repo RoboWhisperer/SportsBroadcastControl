@@ -14,6 +14,7 @@ export default function Monitoring() {
     { label: 'Stream', state: s.obs.streaming ? 'live' : 'off', detail: s.obs.streaming ? `${hhmmss(s.obs.streamDuration)} · ${(s.obs.bitrate / 1000).toFixed(1)} Mbps · ${(s.obs.droppedFrames * 100).toFixed(2)}% dropped` : 'Off air' },
     { label: 'Recording', state: s.obs.recording ? 'live' : 'off', detail: s.obs.recording ? hhmmss(s.obs.recordDuration) : 'Not recording' },
     { label: 'Replay', state: s.replay.bufferActive ? 'connected' : 'off', detail: s.replay.detail },
+    { label: 'App version', state: 'connected', detail: s.version },
     { label: 'Control API', state: s.settings.api.enabled ? 'connected' : 'off', detail: s.settings.api.enabled ? `port ${s.settings.api.port}${s.settings.api.allowLan ? ' (LAN)' : ' (localhost)'}` : 'Disabled' },
   ]
 

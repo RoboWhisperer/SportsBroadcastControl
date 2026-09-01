@@ -257,6 +257,8 @@ export interface ChecklistItem {
 }
 
 export interface AppState {
+  /** The running build, so a teacher can be told what a remote rig is on. */
+  version: string
   settings: Settings
   obs: OBSStatus
   graphics: GraphicsStatus

@@ -20,8 +20,49 @@ CREATE INDEX IF NOT EXISTS logs_t ON logs (t);
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `
 
-/** Bumped whenever a migration is added below. */
-const SCHEMA_VERSION = 1
+/**
+ * Raised by one for each entry in MIGRATIONS. Never edit a shipped migration:
+ * add a new one, because databases in the field have already run the old.
+ */
+const SCHEMA_VERSION = 2
+
+/** Thrown when the file was written by a newer build than this one. */
+export class SchemaTooNewError extends Error {
+  constructor(readonly found: number, readonly supported: number) {
+    super(
+      `This configuration was written by a newer version of the app (database format ${found}, ` +
+        `this build understands ${supported}). Install the newer version again, or move ` +
+        `sbc.db aside to start fresh — it will not be modified.`,
+    )
+    this.name = 'SchemaTooNewError'
+  }
+}
+
+interface Migration {
+  to: number
+  name: string
+  run(db: DatabaseSync): void
+}
+
+/**
+ * Applied in order, each inside a transaction, with the version recorded only
+ * after its migration commits. A crash mid-upgrade therefore leaves the file at
+ * the last version that fully succeeded rather than half-converted.
+ */
+const MIGRATIONS: Migration[] = [
+  {
+    to: 2,
+    name: 'drop documents superseded before 1.0.0',
+    run(db) {
+      // `cameras` held a hand-maintained camera list; cameras are now derived
+      // from the OBS scene list and never stored. `checklist` was a single
+      // global list; checklists are now keyed by sport and venue. Databases
+      // from pre-release builds can still carry both, and leaving them costs
+      // nothing but confuses anyone reading the file.
+      db.prepare(`DELETE FROM docs WHERE key IN ('cameras', 'checklist')`).run()
+    },
+  },
+]
 
 export interface Crypto {
   encrypt(plain: string): string
@@ -135,14 +176,58 @@ export class Store {
     this.seed()
   }
 
+  /** Migrations applied by the most recent open, for logging and tests. */
+  readonly applied: string[] = []
+
+  private setVersion(v: number) {
+    this.db
+      .prepare(`INSERT INTO meta (key,value) VALUES ('schema_version',?)
+                ON CONFLICT(key) DO UPDATE SET value=excluded.value`)
+      .run(String(v))
+  }
+
   private migrate() {
-    const row = this.db.prepare(`SELECT value FROM meta WHERE key='schema_version'`).get() as unknown as { value: string } | undefined
+    const row = this.db.prepare(`SELECT value FROM meta WHERE key='schema_version'`).get() as unknown as
+      | { value: string }
+      | undefined
     const from = row ? Number(row.value) : 0
-    // Future migrations go here, guarded by `if (from < n)`.
-    if (from !== SCHEMA_VERSION) {
-      this.db.prepare(`INSERT INTO meta (key,value) VALUES ('schema_version',?)
-                       ON CONFLICT(key) DO UPDATE SET value=excluded.value`).run(String(SCHEMA_VERSION))
+
+    if (from > SCHEMA_VERSION) throw new SchemaTooNewError(from, SCHEMA_VERSION)
+    if (from === SCHEMA_VERSION) return
+
+    // An unversioned file is either brand new or predates versioning. A new one
+    // has no documents yet, and stamping it avoids reporting an "upgrade" on
+    // every clean install; anything with documents is genuinely old and is
+    // migrated from 0.
+    if (!row) {
+      const { n } = this.db.prepare('SELECT COUNT(*) AS n FROM docs').get() as unknown as { n: number }
+      if (n === 0) {
+        this.setVersion(SCHEMA_VERSION)
+        return
+      }
     }
+
+    for (const m of MIGRATIONS.filter((x) => x.to > from).sort((a, b) => a.to - b.to)) {
+      this.db.exec('BEGIN')
+      try {
+        m.run(this.db)
+        this.setVersion(m.to)
+        this.db.exec('COMMIT')
+      } catch (e) {
+        this.db.exec('ROLLBACK')
+        throw new Error(`Database migration to version ${m.to} (${m.name}) failed: ${(e as Error).message}`)
+      }
+      this.applied.push(`${m.to}: ${m.name}`)
+    }
+    this.setVersion(SCHEMA_VERSION)
+  }
+
+  /** The format version this file is now at. */
+  schemaVersion(): number {
+    const row = this.db.prepare(`SELECT value FROM meta WHERE key='schema_version'`).get() as unknown as
+      | { value: string }
+      | undefined
+    return row ? Number(row.value) : 0
   }
 
   private seed() {

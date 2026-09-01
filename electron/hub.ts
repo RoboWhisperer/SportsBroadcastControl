@@ -81,10 +81,14 @@ export class Hub extends EventEmitter {
   private thumbsWanted = true
   private reloadTimer: NodeJS.Timeout | null = null
 
-  constructor(readonly store: Store) {
+  constructor(
+    readonly store: Store,
+    appVersion = 'dev',
+  ) {
     super()
     const settings = store.getSettings()
     this.state = {
+      version: appVersion,
       settings,
       obs: { state: 'disconnected', detail: 'Not connected', lastOk: 0, currentScene: '', scenes: [], streaming: false, recording: false, recordPaused: false, replayBufferActive: false, bitrate: 0, droppedFrames: 0, streamDuration: 0, recordDuration: 0, studioMode: false, previewScene: '' },
       graphics: { state: 'disconnected', detail: 'Not connected', lastOk: 0, engine: 'CasparCG Server', version: '', templates: [], onAir: [] },

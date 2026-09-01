@@ -47,7 +47,22 @@ Green tests do not mean verified. These paths have only ever run against mocks:
 means "install over the top and hope", and there is no evidence that a database
 written by v1.0.0 survives it.
 
-### 0.1 Prove the migration path
+### 0.1 Prove the migration path — **done**
+
+`electron/db.ts` now runs ordered migrations inside transactions, recording the
+version only after each commits; refuses a database written by a newer build
+rather than downgrading it; and stamps a brand-new file instead of "migrating"
+it. `tests/fixtures/v1.0.1-schema1.db` is a schema-1 database in the shape 1.0.0
+and 1.0.1 shipped, and `tests/migration.test.ts` opens it and asserts settings,
+venues, mappings, scene overrides, hotkeys, game state, checklists, logs and
+window position all survive, that the migration is idempotent, and that a
+newer-format file is left untouched. Regenerate the fixture with
+`tests/fixtures/make-v1-fixture.mjs`.
+
+Keep a fixture per shipped release from here on: add the next one when the
+format changes, and never edit a migration that has shipped.
+
+<details><summary>Original note</summary>
 
 `electron/db.ts` declares `SCHEMA_VERSION = 1` and `migrate()` records it, but
 **no migration has ever been written or run**. The store already survived one
@@ -66,18 +81,35 @@ breaking change during development (the `cameras` table was dropped in favour of
 **Acceptance:** a v1.0.0 database opens under v1.1.0 with venues, mappings,
 checklists, hotkeys and game state intact, proven by a test.
 
+</details>
+
 ### 0.2 Sign the Windows build
 
 The installer is unsigned, so Windows SmartScreen warns on every install and
 some school IT policies will block it outright.
 
-* Obtain a code-signing certificate and wire `win.certificateFile` /
-  `CSC_LINK` into `electron-builder.yml`.
-* Document the signing step so a release is reproducible by someone else.
+* Obtain a code-signing certificate. **This is the blocker** — a certificate
+  must be bought and cannot be generated, so this is the one part of Phase 0
+  that cannot be completed from the repository.
+* The signing procedure is written up in `docs/administrator-guide.md` under
+  *Signing the Windows installer*; `electron-builder` reads `CSC_LINK` and
+  `CSC_KEY_PASSWORD` from the environment, so no repository change is needed
+  once a certificate exists.
 
 **Acceptance:** a downloaded installer runs without a SmartScreen block.
 
-### 0.3 Decide the update mechanism
+### 0.3 Decide the update mechanism — **decided: manual**
+
+Documented in `docs/administrator-guide.md` under *Moving between versions*, and
+the running build is now shown on the Monitoring page and returned by
+`GET /api/status`, so a rig can be identified remotely. No auto-updater: an
+update that fires mid-game is worse than an out-of-date rig, and a school runs
+one or two machines.
+
+Revisit only if this is ever deployed across many rigs, and then only as
+check-on-launch with an explicit prompt.
+
+<details><summary>Original options</summary>
 
 There is no `electron-updater` and no publish target. Options, cheapest first:
 
@@ -91,6 +123,8 @@ never "download and restart".
 
 **Acceptance:** `docs/administrator-guide.md` states exactly how a school moves
 from one version to the next, and the app's About surface shows its version.
+
+</details>
 
 ---
 

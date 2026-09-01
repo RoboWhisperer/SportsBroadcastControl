@@ -111,6 +111,28 @@ This is a UI guard for a shared machine, not a security boundary. Anyone with th
 computer can undo it, by design — being locked out of your own settings is worse
 than a student switching the view back.
 
+## Signing the Windows installer
+
+The published installer is **unsigned**, so Windows SmartScreen warns on every
+install and some school IT policies block it outright. Fixing that needs a code
+signing certificate, which has to be bought — it cannot be generated.
+
+Once you have one, `electron-builder` picks it up from the environment; nothing
+in the repository needs to change:
+
+```bash
+export CSC_LINK=/path/to/certificate.pfx     # or a base64 data URI
+export CSC_KEY_PASSWORD='…'
+npm run dist
+```
+
+For an EV certificate on a hardware token, set `win.signtoolOptions` in
+`electron-builder.yml` to point at the token's CSP instead. Never commit a
+certificate or its password.
+
+Until then, tell staff to expect the SmartScreen prompt, and publish the
+installer's SHA-256 so they can check what they downloaded.
+
 ## Security
 
 * The control API binds to `127.0.0.1` unless you enable LAN access.
@@ -119,6 +141,43 @@ than a student switching the view back.
 * The OBS password and the API token are stored via the OS keystore (DPAPI on
   Windows). On a machine with no keystore they are stored as written, and the
   app upgrades them automatically the first time one is available.
+
+## Moving between versions
+
+**The update mechanism is manual, by design.** There is no auto-updater. An
+automatic update that fires during a game is worse than an out-of-date rig, and
+a school runs one or two machines, not a fleet.
+
+To upgrade:
+
+1. Note the version the rig is on: **Monitoring → App version**, or over the
+   control API at `GET /api/status` (the `version` field), which is how you check
+   a rig you are not sitting at.
+2. Download the new release.
+3. Install over the top. Windows: run the installer. Debian or Ubuntu:
+   `sudo apt install ./sports-broadcast-control_<version>_amd64.deb`.
+4. Start the app and confirm **Monitoring → App version** shows the new number.
+
+**Do not upgrade on game day.** Upgrade after a broadcast, then start the app
+once and run the pre-game checklist before you rely on it.
+
+### What happens to your configuration
+
+The database is upgraded in place on first start. Each change to its format is a
+numbered migration applied inside a transaction, and the version is recorded
+only once that migration commits, so an upgrade interrupted by a crash or power
+loss leaves the file at the last format that fully succeeded rather than half
+converted. Anything applied is logged, and appears on the Monitoring page as
+`Database migrated — …`.
+
+Back up `sbc.db` before a major upgrade anyway; see below for where it lives.
+
+### Downgrading
+
+If you install an **older** version over a newer one, the app refuses to start
+and says so, rather than writing the older format over your newer configuration
+and losing the difference. Either reinstall the newer version, or move `sbc.db`
+aside to start from defaults — the app will not modify the file it refused.
 
 ## Where the data lives
 
