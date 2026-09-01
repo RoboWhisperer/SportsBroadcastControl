@@ -1,6 +1,6 @@
 {
   "name": "sports-broadcast-control",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Control surface for live sports broadcasts. Orchestrates OBS Studio and CasparCG; it does not replace them.",
   "license": "MIT",
   "private": true,
