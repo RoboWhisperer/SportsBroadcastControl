@@ -7,11 +7,25 @@ installer creates Start Menu and desktop shortcuts. Configuration, the SQLite
 database and logs are created on first run in
 `%APPDATA%\sports-broadcast-control\`.
 
+On Debian or Ubuntu, install the `.deb` from the releases page:
+
+```bash
+sudo apt install ./sports-broadcast-control_1.0.0_amd64.deb
+```
+
+Or run the AppImage directly, with no installation:
+
+```bash
+chmod +x "Sports Broadcast Control-1.0.0.AppImage"
+./"Sports Broadcast Control-1.0.0.AppImage"
+```
+
 Build it yourself:
 
 ```bash
 npm install
-npm run dist
+npm run dist            # every target for the current platform
+npx electron-builder --linux deb    # just the deb
 ```
 
 There is no native module to compile. SQLite comes from Node's built-in

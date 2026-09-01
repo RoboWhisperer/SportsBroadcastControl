@@ -35,10 +35,31 @@ nsis:
   deleteAppDataOnUninstall: false
 
 linux:
-  target: [AppImage]
+  target: [AppImage, deb]
   category: AudioVideo
   synopsis: Control surface for live sports broadcasts
   # Ties a running window to the .desktop entry so the taskbar shows our icon.
   syncDesktopName: true
+  # Required by the deb format.
+  maintainer: RoboWhisperer <robo@robowhisperer.is-a.dev>
+
+deb:
+  priority: optional
+  packageCategory: video
+  # Stated explicitly rather than relying on the defaults, which still name
+  # packages such as gconf2 that no longer exist and make the package refuse to
+  # install. Ubuntu 24.04 and Debian 13 renamed several of these in the 64-bit
+  # time_t transition, so each is given as an alternative: the t64 name first
+  # for current systems, the old name as a fallback for older ones.
+  # libsecret backs safeStorage, which encrypts the OBS password and the
+  # control-API token.
+  depends:
+    - libgtk-3-0t64 | libgtk-3-0
+    - libatspi2.0-0t64 | libatspi2.0-0
+    - libnotify4
+    - libnss3
+    - libxtst6
+    - libsecret-1-0
+    - xdg-utils
 
 # icon is picked up from build/icon.png (1024x1024) for every target.
