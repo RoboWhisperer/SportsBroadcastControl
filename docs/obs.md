@@ -9,6 +9,9 @@ clicks or keystrokes.
 **Tools → WebSocket Server Settings** → *Enable WebSocket server*. Default port
 4455. Copy the password into **Settings → OBS**.
 
+For building the scene collection itself — scenes, camera sources, the replay
+buffer, getting graphics in — see **[obs-setup.md](obs-setup.md)**.
+
 ## Scenes this app expects
 
 Nothing is created for you. Build the scenes in OBS and map them here:

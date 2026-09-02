@@ -65,7 +65,8 @@ in Settings → General → Mode when you are ready to drive real gear.
 | --- | --- |
 | [installation.md](docs/installation.md) | Installing the app, OBS and CasparCG |
 | [configuration.md](docs/configuration.md) | Every setting and where it is stored |
-| [obs.md](docs/obs.md) | OBS WebSocket setup and the scenes this app expects |
+| [obs-setup.md](docs/obs-setup.md) | Building an OBS scene collection this app can drive |
+| [obs.md](docs/obs.md) | Which OBS WebSocket requests the app uses, and why |
 | [scenes.md](docs/scenes.md) | The scene grid: previews for the whole collection |
 | [sources.md](docs/sources.md) | Scenes and sources: everything comes from OBS |
 | [ndi.md](docs/ndi.md) | NDI discovery and health checks |

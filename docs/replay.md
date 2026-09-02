@@ -15,6 +15,9 @@ implement a replay engine.
 6. On `MediaInputPlaybackEnded` it returns to the scene that was on program,
    if *After replay* is set to return automatically.
 
+Setting the OBS side up is covered step by step in
+[obs-setup.md](obs-setup.md); the summary is below.
+
 ## Set up once
 
 | Where | What |

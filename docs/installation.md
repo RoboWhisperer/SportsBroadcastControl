@@ -67,7 +67,7 @@ There is no native module to compile. SQLite comes from Node's built-in
 1. Install from <https://obsproject.com/> (30 or newer).
 2. **Tools → WebSocket Server Settings** → *Enable WebSocket server*.
 3. Note the port (4455) and **Show Connect Info** for the password.
-4. Create your scenes. This app switches between them; it does not create them.
+4. Create your scenes — full walkthrough in [obs-setup.md](obs-setup.md).
    A workable starting set:
 
    ```
