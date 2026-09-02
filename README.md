@@ -72,6 +72,7 @@ in Settings → General → Mode when you are ready to drive real gear.
 | [selected-graphics-package.md](docs/selected-graphics-package.md) | **Why CasparCG, licence, download, install, protocol** |
 | [casparcg-on-debian.md](docs/casparcg-on-debian.md) | Installing CasparCG on Debian-family Linux that is not Ubuntu |
 | [templates.md](docs/templates.md) | Installing, mapping and replacing templates |
+| [recommended-templates.md](docs/recommended-templates.md) | Which template packs to use, and how to judge one |
 | [scoreboard.md](docs/scoreboard.md) | Game state and how it reaches the graphics |
 | [replay.md](docs/replay.md) | Replay buffer, slow motion, return to live |
 | [streamdeck.md](docs/streamdeck.md) | Local control API and Stream Deck buttons |

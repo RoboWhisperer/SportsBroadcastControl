@@ -19,77 +19,16 @@ and stays useful with any pack.
    everything CasparCG can see.
 3. Open **Graphics → Template mapping** and point each role at a template.
 
-## Packs that were actually checked
+## Which pack to install
 
-Surveyed September 2026. Most CasparCG template repositories have **no licence
-file at all**, which is why nothing is bundled with this app. These were opened
-and read, not just listed:
+See **[recommended-templates.md](recommended-templates.md)** for the packs that
+were opened and tested, the one worth installing, and a four-check method for
+judging any pack you find yourself.
 
-| Pack | Licence | Verdict |
-| --- | --- | --- |
-| [crazyscot/casparcg-client](https://github.com/crazyscot/casparcg-client) `template/mediary/` | **MIT** | **Recommended.** Nine sports templates, correct CasparCG contract, all dependencies vendored locally |
-| [xtv-online/football-graphics](https://github.com/xtv-online/football-graphics) | GPL-3.0 | **Not compatible.** Its templates have no `update()`/`play()`/`stop()`; they are driven by the project's own WebSocket app, not by AMCP |
-| [k4kfh/casparcg-html-templates](https://github.com/k4kfh/casparcg-html-templates) | GPL-3.0 | Learning framework only — hello-world and a weather demo, not a production pack |
-| [chrisryanouellette/CasparCG-Guide-HTML-Template](https://github.com/chrisryanouellette/CasparCG-Guide-HTML-Template) | MIT | One worked example, paired with a good [written guide](https://chrisryanouellette.gitbook.io/casparcg-html-template-guide) |
-| [Streamshapers/Ferryman](https://github.com/Streamshapers/StreamShapers-Ferryman) | AGPL-3.0 | A *tool*, not a pack: converts Lottie/After Effects animations into CasparCG HTML templates |
-| [mariokaufmann/zagreus](https://github.com/mariokaufmann/zagreus) | MIT | Actively maintained framework for building web graphics templates |
-
-A GPL or AGPL licence is not a problem for a school: you install the templates
-into your own CasparCG, you do not redistribute them, and this app never links
-to them. It is only a problem for *bundling*, which is why we do not.
-
-### The recommended pack in detail
-
-`crazyscot/casparcg-client` contains `template/mediary/`:
-
-```
-scorebug.html        score_lowerthird.html   scoreextra.html   scorehistory.html
-lowerthird.html      lt_banner.html          lt_picture.html
-creditscrawl.html    timer/countdown_timer.html
-```
-
-Why it passes where others fail:
-
-* **MIT licensed**, with the licence file present.
-* **Implements the real contract** — `play()`, `stop()`, `update(str)`.
-* **Works offline.** GSAP, the Poppins and Droid Sans fonts, the CSS and the
-  logo are all vendored in the repository. Every reference is relative; nothing
-  is fetched from a CDN, which matters because the production rig must work with
-  the Internet down.
-* **Fails gracefully.** `update()` falls back to sample data if it is handed
-  something that is not JSON, so a mis-set data format shows placeholder text
-  rather than a blank frame.
-
-Install it by copying `template/mediary` into your CasparCG `template/` folder,
-then **Graphics → Rescan**. It appears as `MEDIARY/SCOREBUG`, `MEDIARY/LOWERTHIRD`
-and so on.
-
-### Mapping it to this app
-
-These templates parse **JSON**, not `templateData` XML, so set
-**Data format: JSON** for every role you map to them. Then rename the fields:
-
-| Role | Template | Field renames |
-| --- | --- | --- |
-| Scoreboard | `MEDIARY/SCOREBUG` | `homeAbbr`→`team1`, `homeScore`→`score1`, `awayAbbr`→`team2`, `awayScore`→`score2`, `homeColor`→`team1bg`, `awayColor`→`team2bg`, `period`→`extra` |
-| Lower third | `MEDIARY/LOWERTHIRD` | `line1`→`name`, `line2`→`title` |
-| Player intro | `MEDIARY/LT_BANNER` | `name`→`name`, `position`→`title` |
-| Sponsor | `MEDIARY/LT_PICTURE` | `name`→`name` |
-
-Two limits worth knowing before you rely on it:
-
-* The scorebug takes one free-text `extra` field, so you can show the period
-  **or** the clock, not both. Mapping `period`→`extra` is the usual choice.
-* `team1fg`/`team2fg` (text colours) have no equivalent in this app's game
-  state, so the template's own defaults apply.
-
-Other places to look, if none of the above suit:
-
-* <https://github.com/topics/casparcg-template>
-* The CasparCG community forum, <https://casparcgforum.org/>
-* CasparCG Server's own `template` folder, which contains examples
-
-Check the licence of anything you install before a public broadcast.
+The short version: install
+[crazyscot/casparcg-client](https://github.com/crazyscot/casparcg-client)'s
+`template/mediary` folder. It is MIT licensed, implements the CasparCG contract,
+and vendors all its dependencies so it works offline.
 
 ## Roles the app can drive
 
