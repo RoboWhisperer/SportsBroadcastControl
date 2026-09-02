@@ -1,6 +1,7 @@
 <img src="docs/img/logo.jpg" alt="" width="128" align="right">
 
 # Sports Broadcast Control
+[![](https://img.shields.io/badge/_-OpenDeepWiki-blue?style=for-the-badge)](https://opendeep.wiki/RoboWhisperer/SportsBroadcastControl) [![license](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](https://opendeep.wiki/RoboWhisperer/SportsBroadcastControl)
 
 A control surface for a high-school sports broadcast. One screen a student
 operator can run the whole show from: cameras, stream, recording, replay,
