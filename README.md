@@ -32,7 +32,7 @@ WebSocket, so no OS capture prompt ever appears.
 | OS | Windows 11 (primary), Linux (secondary) |
 | [OBS Studio](https://obsproject.com/) | 30 or newer, with the built-in WebSocket server enabled |
 | [CasparCG Server](https://github.com/CasparCG/server/releases) | 2.4 or 2.5, free, GPLv3 — optional, only for graphics |
-| CasparCG templates | Any HTML template pack you install yourself, see [docs/templates.md](docs/templates.md) |
+| CasparCG templates | Any HTML template pack you install yourself, see [installing them](docs/installing-templates.md) |
 | Node.js | 22+ only if you are building from source |
 
 Nothing needs an Internet connection except the live stream itself.
