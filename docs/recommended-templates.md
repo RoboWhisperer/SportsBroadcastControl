@@ -23,7 +23,8 @@ creditscrawl.html      timer/countdown_timer.html
 
 Copy `template/mediary` into your CasparCG `template/` folder and press
 **Graphics → Rescan**. The templates appear as `MEDIARY/SCOREBUG`,
-`MEDIARY/LOWERTHIRD` and so on.
+`MEDIARY/LOWERTHIRD` and so on. Full walkthrough:
+[installing-templates.md](installing-templates.md).
 
 Why it passes:
 

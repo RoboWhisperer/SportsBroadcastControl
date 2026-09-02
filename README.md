@@ -72,7 +72,8 @@ in Settings → General → Mode when you are ready to drive real gear.
 | [graphics.md](docs/graphics.md) | How graphics are triggered |
 | [selected-graphics-package.md](docs/selected-graphics-package.md) | **Why CasparCG, licence, download, install, protocol** |
 | [casparcg-on-debian.md](docs/casparcg-on-debian.md) | Installing CasparCG on Debian-family Linux that is not Ubuntu |
-| [templates.md](docs/templates.md) | Installing, mapping and replacing templates |
+| [installing-templates.md](docs/installing-templates.md) | Step by step: pack on disk to graphic on air |
+| [templates.md](docs/templates.md) | How templates work here: roles, mapping, field names |
 | [recommended-templates.md](docs/recommended-templates.md) | Which template packs to use, and how to judge one |
 | [scoreboard.md](docs/scoreboard.md) | Game state and how it reaches the graphics |
 | [replay.md](docs/replay.md) | Replay buffer, slow motion, return to live |

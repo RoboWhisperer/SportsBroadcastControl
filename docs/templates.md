@@ -12,12 +12,13 @@ and stays useful with any pack.
 
 ## Installing a pack
 
-1. Put the template files under CasparCG's template folder, normally
-   `<CasparCG>\template\`. Subfolders are fine and become part of the name:
-   `template\SPORTS\SCOREBOARD.html` is reported as `SPORTS/SCOREBOARD`.
-2. In the app, open **Graphics → Rescan**. The app runs `TLS` and lists
-   everything CasparCG can see.
-3. Open **Graphics → Template mapping** and point each role at a template.
+Step by step, with the checks at each stage:
+**[installing-templates.md](installing-templates.md)**.
+
+In brief: copy the pack's folder into CasparCG's `template/` folder keeping its
+structure, press **Graphics → Rescan**, then point each role at a template under
+**Graphics → Template mapping**. Folder names become part of the template name,
+so `template/SPORTS/SCOREBOARD.html` is reported as `SPORTS/SCOREBOARD`.
 
 ## Which pack to install
 

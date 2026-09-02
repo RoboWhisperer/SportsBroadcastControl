@@ -17,7 +17,9 @@ Then follow [installation.md](installation.md).
 
 ## Install or replace templates
 
-Full detail in [templates.md](templates.md). The short version:
+Full walkthrough in [installing-templates.md](installing-templates.md), and
+which pack to pick in [recommended-templates.md](recommended-templates.md). The
+short version:
 
 1. Copy the template files into `<CasparCG>\template\`.
 2. In the app: **Graphics → Rescan**.
