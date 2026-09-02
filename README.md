@@ -1,4 +1,4 @@
-<img src="build/icon.png" alt="" width="128" align="right">
+<img src="build/icon.png" alt="" width="64" align="right">
 
 # Sports Broadcast Control
 [![](https://img.shields.io/badge/_-OpenDeepWiki-blue?style=for-the-badge)](https://opendeep.wiki/RoboWhisperer/SportsBroadcastControl) [![license](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](https://opendeep.wiki/RoboWhisperer/SportsBroadcastControl)
